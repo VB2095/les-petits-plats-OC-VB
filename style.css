@@ -1,0 +1,26 @@
+header {
+    padding: 20px;
+}
+
+.searchbar input {
+    border: none;
+    background: #E7E7E7;
+    padding: 20px;
+
+}
+
+.searchbar button {
+    border: none;
+    background: #E7E7E7 ;
+}
+
+.btn-group{
+    margin-bottom: 10px;
+}
+.card {
+    margin-bottom: 10px;
+    width: 180px;
+}
+.card img {
+    object-fit: contain;
+}
