@@ -1,5 +1,10 @@
 
-//function displayRecipe to show the filtered recipes in the html page having id="recipes"
+//window on load event 
+window.onload = () => {
+
+
+console.log ('Recipes: ', recipes);
+
 function displayRecipes(recipes) {
     let html = ''
     recipes.forEach(recipe => {
@@ -37,19 +42,232 @@ function displayRecipes(recipes) {
 
 displayRecipes(recipes)
 
+//get a list of all the ingredients in the recipes array and add the id of the recipe to the ingredient object as a property
+function getIngredients(recipes) {
+    let ingredients = []
+    recipes.forEach(recipe => {
+        recipe.ingredients.forEach(ingredient => {
+            ingredient.recipeId = recipe.id
+            ingredients.push(ingredient)
+        })
+    })
+    return ingredients
+}
+
+//console log the ingredients array 
+console.log('Ingredients: ', getIngredients(recipes))
+
+//get a list of all the ustensils in the recipes array and add the id of the recipe to the ustensil object as a property
+function getUstensils(recipes) {
+    let ustensils = []
+    recipes.forEach(recipe => {
+        recipe.ustensils.forEach(ustensil => {
+            ustensil.recipeId = recipe.id
+            ustensils.push(ustensil)
+        })
+    })
+    return ustensils
+}
+
+//get a list of all the appliances in the recipes array and add the id of the recipe to the appliance object as a property
+function getAppliances(recipes) {
+    let appliances = []
+    recipes.forEach(recipe => {
+        recipe.appliance.recipeId = recipe.id
+        appliances.push(recipe.appliance)
+    })
+    return appliances
+}
+
+//console log the appliances array
+console.log('Appliances: ', getAppliances(recipes))
+
+//add the ingredients, ustensils and appliances arrays as a list of options to the ul list in the html file 
+function addOptionsToSelects(ingredients, ustensils, appliances) {
+    let html = ''
+    ingredients.forEach(ingredient => {
+        html += `
+            <li class="list-group-item" id="${ingredient.ingredient}"><a>${ingredient.ingredient}</a></li>
+        `
+    })
+    document.querySelector('#ingredients').innerHTML = html
+
+    html = ''
+    ustensils.forEach(ustensil => {
+        html += `
+            <li class="list-group-item" id="${ustensil}"><a>${ustensil}</a></li>
+        `
+    })
+    document.querySelector('#ustensils').innerHTML = html
+
+    html = ''
+    appliances.forEach(appliance => {
+        html += `
+            <li class="list-group-item" id="${appliance}"><a>${appliance}</a></li>
+        `
+    })
+    document.querySelector('#appliances').innerHTML = html
+}
+
+addOptionsToSelects(getIngredients(recipes), getUstensils(recipes), getAppliances(recipes))
+//actualiser les listes des ingredients, ustensils et appareils avec les ingredients, ustensils et appareils qui sont contenus dans les recettes qui correspondent à la recherche et qui correspondent aux filtres sélectionnés 
+
+
+function filterList() {
+    let ingredients = []
+    let ustensils = []
+    let appliances = []
+    recipes.forEach(recipe => {
+        if (recipe.name.toLowerCase().includes(document.querySelector('#search').value.toLowerCase())) {  
+            recipe.ingredients.forEach(ingredient => {
+                ingredient.recipeId = recipe.id
+                ingredients.push(ingredient)
+            })
+            recipe.ustensils.forEach(ustensil => {
+                ustensil.recipeId = recipe.id
+                ustensils.push(ustensil)
+            })
+            recipe.appliance.recipeId = recipe.id
+            appliances.push(recipe.appliance)
+        }
+    })
+    addOptionsToSelects(ingredients, ustensils, appliances)
+}
+
+
+
+//selectionner un ingredients de la liste des ingredients et actualiser la liste des ingrédients avec les ingrédients qui sont contenus dans les recettes qui correspondent aux filtres sélectionnés
+document.querySelector('#ingredients').addEventListener('click', (e) => {
+    if (e.target.tagName === 'A') {
+        let ingredients = []
+        let ustensils = []
+        let appliances = []
+        recipes.forEach(recipe => {
+            recipe.ingredients.forEach(ingredient => {
+                if (ingredient.ingredient === e.target.textContent) {
+                    ingredient.recipeId = recipe.id
+                    ingredients.push(ingredient)
+                }
+            })
+            recipe.ustensils.forEach(ustensil => {
+                ustensil.recipeId = recipe.id
+                ustensils.push(ustensil)
+            })
+            recipe.appliance.recipeId = recipe.id
+            appliances.push(recipe.appliance)
+        })
+        addOptionsToSelects(ingredients, ustensils, appliances)
+    }
+})
+
+
+
+
+
+//add the event listener to the search input to filter the list of ingredients, ustensils and appliances and display the matching recipes 
+document.querySelector('#search', 'searchIngredients').addEventListener('keyup', () => {
+    filterList()
+    closeDetails()
+})
+
+//filter the list of ingredients with the matching value when user search on the input with id searchIngredients 
+document.querySelector('#searchIngredients').addEventListener('keyup', () => {
+    let ingredients = document.querySelectorAll('#ingredients li')
+    ingredients.forEach(ingredient => {
+        if (ingredient.textContent.toLowerCase().includes(document.querySelector('#searchIngredients').value.toLowerCase())) {
+            ingredient.style.display = 'block'
+        } else {
+            ingredient.style.display = 'none'
+        }
+    })
+})
+
+//do the same for the ustensils and appliances
+document.querySelector('#searchUstensils').addEventListener('keyup', () => {
+    let ustensils = document.querySelectorAll('#ustensils li')
+    ustensils.forEach(ustensil => {
+        if (ustensil.textContent.toLowerCase().includes(document.querySelector('#searchUstensils').value.toLowerCase())) {
+            ustensil.style.display = 'block'
+        } else {
+            ustensil.style.display = 'none'
+        }
+    })
+})
+
+document.querySelector('#searchAppliances').addEventListener('keyup', () => {
+    let appliances = document.querySelectorAll('#appliances li')
+    appliances.forEach(appliance => {
+        if (appliance.textContent.toLowerCase().includes(document.querySelector('#searchAppliances').value.toLowerCase())) {
+            appliance.style.display = 'block'
+        } else {
+            appliance.style.display = 'none'
+        }
+    })
+})
+
+
+const details = document.querySelectorAll("details");
+
+details.forEach (targetDetail => {
+    targetDetail.addEventListener("toggle", closeDetails);
+});
+
+function closeDetails() {
+    if (this.open) { 
+        details.forEach(detail => {
+            if (detail !== this) {
+                detail.removeAttribute("open");
+            }
+        });
+    }
+}
+
+
+function closeDetails() {
+    if (this.open) {
+        details.forEach(detail => {
+            if (detail !== this) {
+                detail.removeAttribute("open");
+            }
+        });
+
+        const summary = this.querySelector("summary");
+        const input = summary.querySelector("input");
+        const p = summary.querySelector("p");
+        const span = summary.querySelector("span");
+        span.classList.add("rotate");
+        p.classList.add("hidden");
+        input.classList.add("active");
+        //input focus 
+        input.focus();
+    } else {
+        const summary = this.querySelector("summary");
+        const input = summary.querySelector("input");
+        const span = summary.querySelector("span");
+        const p = summary.querySelector("p");
+        input.classList.remove("active");
+        p.classList.add("active");
+        p.classList.remove("hidden");
+        span.classList.remove("rotate");
+    }
+}
+
+
+
+
+
+
+
 
 
 //show dinamycally the recipes in the html page from the input search bar with id "search"
 const search = document.getElementById('search')
 search.addEventListener('keyup', (e) => {
     const searchString = e.target.value.toLowerCase()
-
     const filteredRecipes = recipes.filter((recipe) => {
         return (
             recipe.name.toLowerCase().includes(searchString) ||
-            recipe.description.toLowerCase().includes(searchString) 
-            
-            
+            recipe.description.toLowerCase().includes(searchString)      
         )
     })
 
@@ -63,251 +281,12 @@ search.addEventListener('keyup', (e) => {
     if (filteredRecipes.length === 0) {
         document.querySelector('#recipes').innerHTML = `<p>Aucune recette ne correspond à votre critère… vous pouvez chercher « tarte aux pommes », « poisson », etc</p>`
     }
-
-
-
 })
 
 
 
 
-// //get the ingredients from the recipes and add it in a var called ingredients
-const myIngredients = recipes.map(recipe => recipe.ingredients.map(ingredient => ingredient.ingredient)).flat()
-let ingredientInput = document.getElementById('searchIngredients')
-var options = document.getElementById("ingredients");
-
-
-filteredIngredients = myIngredients.filter((item, index) => myIngredients.indexOf(item) === index)
-
-filteredIngredients.forEach(ingredient => {
-    var opt = document.createElement('option');
-    opt.value = ingredient;
-    opt.innerHTML = ingredient;
-    options.appendChild(opt);
-});
-
-
-// for (var i =0; i < myIngredients.length; i++) {
-//     options += '<li value="' + myIngredients[i] + '">' + '<a>' + myIngredients[i] +'</a>' + '</li>';
-// }
-// document.getElementById("ingredients").innerHTML = options;
-
-//on click of additionalSearch-ingredients show ul li list of ingredients 
-document.getElementById("additionalSearch-ingredients").addEventListener("click", function(){
-    document.getElementById("ingredients").style.display = "block";
-    document.getElementById("searchIngredients").style.display = "block";
-
-});
-
-
-
-//filter dinamically the list of ingredients when user search in the input search bar with id "searchIngredients"
-ingredientInput.addEventListener('keyup', (e) => {
-    const searchString = e.target.value.toLowerCase()
-
-    const filteredIngredients = myIngredients.filter((ingredient) => {
-        return (
-            ingredient.toLowerCase().includes(searchString)
-        )
-    })
-        displayIngredients(filteredIngredients)
-
-})
-
-//function displayIngredients to show the filtered ingredients in the html page having id="ingredients"
-function displayIngredients(filteredIngredients) {
-    let html = ''
-    filteredIngredients.forEach(ingredient => {
-        html += `
-            <li value="${ingredient}">${ingredient}</li>
-        `
-    })
-    document.querySelector('#ingredients').innerHTML = html  
 }
 
 
-//get the appliance from the recipes and add it in a var called appliances
-const myAppliances = recipes.map(recipe => recipe.appliance)
-let applianceInput = document.getElementById('searchAppliances')
-var options = document.getElementById("appliances");
 
-
-filteredAppliances = myAppliances.filter((item, index) => myAppliances.indexOf(item) === index)
-
-filteredAppliances.forEach(appliance => {
-    var opt = document.createElement('option');
-    opt.value = appliance;
-    opt.innerHTML = appliance;
-    options.appendChild(opt);
-} );
-
-//on click of additionalSearch-appliances show ul li list of appliances
-document.getElementById("additionalSearch-appliances").addEventListener("click", function(){
-    document.getElementById("appliances").style.display = "block";
-    document.getElementById("searchAppliances").style.display = "block";
-
-});
-
-//filter dinamically the list of appliances when user search in the input search bar with id "searchAppliances"
-
-applianceInput.addEventListener('keyup', (e) => {
-    const searchString = e.target.value.toLowerCase()
-
-    const filteredAppliances = myAppliances.filter((appliance) => {
-        return (
-            appliance.toLowerCase().includes(searchString)
-        )
-    })
-        displayAppliances(filteredAppliances)
-
-})
-
-//function displayAppliances to show the filtered appliances in the html page having id="appliances"
-function displayAppliances(filteredAppliances) {
-    let html = ''
-    filteredAppliances.forEach(appliance => {
-        html += `
-            <li value="${appliance}">${appliance}</li>
-        `
-    })
-    document.querySelector('#appliances').innerHTML = html  
-}
-
-
-//get the ustensils from the recipes and add it in a var called ustensils
-const myUstensils = recipes.map(recipe => recipe.ustensils).flat()
-let ustensilInput = document.getElementById('searchUstensils')
-var options = document.getElementById("ustensils");
-
-
-filteredUstensils = myUstensils.filter((item, index) => myUstensils.indexOf(item) === index)
-
-filteredUstensils.forEach(ustensil => {
-    var opt = document.createElement('option');
-    opt.value = ustensil;
-    opt.innerHTML = ustensil;
-    options.appendChild(opt);
-} );
-
-//on click of additionalSearch-ustensils show ul li list of ustensils
-document.getElementById("additionalSearch-ustensils").addEventListener("click", function(){
-    document.getElementById("ustensils").style.display = "block";
-    document.getElementById("searchUstensils").style.display = "block";
-
-});
-
-//filter dinamically the list of ustensils when user search in the input search bar with id "searchUstensils"
-ustensilInput.addEventListener('keyup', (e) => {
-    const searchString = e.target.value.toLowerCase()
-
-    const filteredUstensils = myUstensils.filter((ustensil) => {
-        return (
-            ustensil.toLowerCase().includes(searchString)
-        )
-    })
-        displayUstensils(filteredUstensils)
-
-})
-
-//function displayUstensils to show the filtered ustensils in the html page having id="ustensils"
-
-function displayUstensils(filteredUstensils) {
-    let html = ''
-    filteredUstensils.forEach(ustensil => {
-        html += `
-            <li value="${ustensil}">${ustensil}</li>
-        `
-    })
-    document.querySelector('#ustensils').innerHTML = html  
-}
-
-
-//when an ingredient, appliance or ustensil is selected, add it in the section with id="tagList" with a cross to delete it and a class "badge" to style it, and hide the ul li list of ingredients, appliances and ustensils. Remove the ingredient, appliance or ustensil from the list of ingredients, appliances and ustensils and remove the ones from the list that are not in the recipes matching with the selected ingredients, appliances and ustensils. Finally filter the recipe matching the selected ingredients, appliances and ustensils and display them in the html page with id="recipes"
-
-document.getElementById("ingredients").addEventListener("click", function(e){
-    if(e.target && e.target.nodeName == "LI") {
-        document.getElementById("ingredients").style.display = "none";
-        document.getElementById("searchIngredients").style.display = "none";
-        document.getElementById("searchIngredients").value = "";
-        var ingredient = e.target.innerHTML;
-        var tagList = document.getElementById("tagList");
-        var tag = document.createElement("span");
-        tag.className = "badge";
-        tag.innerHTML = ingredient + " x";
-        tagList.appendChild(tag);
-        var index = myIngredients.indexOf(ingredient);
-        if (index > -1) {
-            myIngredients.splice(index, 1);
-        }
-        var index = filteredIngredients.indexOf(ingredient);
-        if (index > -1) {
-            filteredIngredients.splice(index, 1);
-        }
-        var index = filteredAppliances.indexOf(ingredient);
-        if (index > -1) {
-            filteredAppliances.splice(index, 1);
-        }
-        var index = filteredUstensils.indexOf(ingredient);
-        if (index > -1) {
-            filteredUstensils.splice(index, 1);
-        }
-        var index = filteredRecipes.indexOf(ingredient);
-        if (index > -1) {
-            filteredRecipes.splice(index, 1);
-        }
-        var index = filteredRecipes.indexOf(ingredient);
-        if (index > -1) {
-            filteredRecipes.splice(index, 1);
-        }
-        var index = filteredRecipes.indexOf(ingredient);
-        if (index > -1) {
-            filteredRecipes.splice(index, 1);
-        }
-        var filteredRecipes = recipes.filter(recipe => recipe.ingredients.some(ingredient => myIngredients.includes(ingredient.ingredient)) && myAppliances.includes(recipe.appliance) && recipe.ustensils.some(ustensil => myUstensils.includes(ustensil)))
-        displayRecipes(filteredRecipes)
-    }
-});
-
-document.getElementById("appliances").addEventListener("click", function(e){
-    if(e.target && e.target.nodeName == "LI") {
-        document.getElementById("appliances").style.display = "none";
-        document.getElementById("searchAppliances").style.display = "none";
-        document.getElementById("searchAppliances").value = "";
-        var appliance = e.target.innerHTML;
-        var tagList = document.getElementById("tagList");
-        var tag = document.createElement("span");
-        tag.className = "badge";
-        tag.innerHTML = appliance + " x";
-        tagList.appendChild(tag);
-        var index = myAppliances.indexOf(appliance);
-        if (index > -1) {
-            myAppliances.splice(index, 1);
-        }
-        var index = filteredAppliances.indexOf(appliance);
-        if (index > -1) {
-            filteredAppliances.splice(index, 1);
-        }
-        var index = filteredIngredients.indexOf(appliance);
-        if (index > -1) {
-            filteredIngredients.splice(index, 1);
-        }
-        var index = filteredUstensils.indexOf(appliance);
-        if (index > -1) {
-            filteredUstensils.splice(index, 1);
-        }
-        var index = filteredRecipes.indexOf(appliance);
-        if (index > -1) {
-            filteredRecipes.splice(index, 1);
-        }
-        var index = filteredRecipes.indexOf(appliance);
-        if (index > -1) {
-            filteredRecipes.splice(index, 1);
-        }
-        var index = filteredRecipes.indexOf(appliance);
-        if (index > -1) {
-            filteredRecipes.splice(index, 1);
-        }
-        var filteredRecipes = recipes.filter(recipe => recipe.ingredients.some(ingredient => myIngredients.includes(ingredient.ingredient)) && myAppliances.includes(recipe.appliance) && recipe.ustensils.some(ustensil => myUstensils.includes(ustensil)))
-        displayRecipes(filteredRecipes)
-    }
-});

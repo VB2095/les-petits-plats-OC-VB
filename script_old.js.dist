@@ -1,0 +1,295 @@
+// //get the ingredients from the recipes and add it in a var called ingredients
+const myIngredients = recipes.map(recipe => recipe.ingredients.map(ingredient => ingredient.ingredient)).flat()
+let ingredientInput = document.getElementById('searchIngredients')
+var options = document.getElementById("ingredients");
+
+
+filteredIngredients = myIngredients.filter((item, index) => myIngredients.indexOf(item) === index)
+
+filteredIngredients.forEach(ingredient => {
+    var opt = document.createElement('option');
+    opt.value = ingredient;
+    opt.innerHTML = ingredient;
+    options.appendChild(opt);
+});
+
+
+// for (var i =0; i < myIngredients.length; i++) {
+//     options += '<li value="' + myIngredients[i] + '">' + '<a>' + myIngredients[i] +'</a>' + '</li>';
+// }
+// document.getElementById("ingredients").innerHTML = options;
+
+//on click of additionalSearch-ingredients show ul li list of ingredients 
+document.getElementById("additionalSearch-ingredients").addEventListener("click", function(){
+    document.getElementById("ingredients").style.display = "flex";
+    document.getElementById("searchIngredients").style.display = "flex";
+
+    
+});
+
+
+
+//filter dinamically the list of ingredients when user search in the input search bar with id "searchIngredients"
+ingredientInput.addEventListener('keyup', (e) => {
+    const searchString = e.target.value.toLowerCase()
+
+    const filteredIngredients = myIngredients.filter((ingredient) => {
+        return (
+            ingredient.toLowerCase().includes(searchString)
+        )
+    })
+        displayIngredients(filteredIngredients)
+
+})
+
+//function displayIngredients to show the filtered ingredients in the html page having id="ingredients"
+function displayIngredients(filteredIngredients) {
+    let html = ''
+    filteredIngredients.forEach(ingredient => {
+        html += `
+            <li value="${ingredient}">${ingredient}</li>
+        `
+    })
+    document.querySelector('#ingredients').innerHTML = html  
+}
+
+
+//get the appliance from the recipes and add it in a var called appliances
+const myAppliances = recipes.map(recipe => recipe.appliance)
+let applianceInput = document.getElementById('searchAppliances')
+var options = document.getElementById("appliances");
+
+
+filteredAppliances = myAppliances.filter((item, index) => myAppliances.indexOf(item) === index)
+
+filteredAppliances.forEach(appliance => {
+    var opt = document.createElement('option');
+    opt.value = appliance;
+    opt.innerHTML = appliance;
+    options.appendChild(opt);
+} );
+
+//on click of additionalSearch-appliances show ul li list of appliances
+document.getElementById("additionalSearch-appliances").addEventListener("click", function(){
+    document.getElementById("appliances").style.display = "flex";
+    document.getElementById("searchAppliances").style.display = "flex";
+
+});
+
+//filter dinamically the list of appliances when user search in the input search bar with id "searchAppliances"
+
+applianceInput.addEventListener('keyup', (e) => {
+    const searchString = e.target.value.toLowerCase()
+
+    const filteredAppliances = myAppliances.filter((appliance) => {
+        return (
+            appliance.toLowerCase().includes(searchString)
+        )
+    })
+        displayAppliances(filteredAppliances)
+
+})
+
+//function displayAppliances to show the filtered appliances in the html page having id="appliances"
+function displayAppliances(filteredAppliances) {
+    let html = ''
+    filteredAppliances.forEach(appliance => {
+        html += `
+            <li value="${appliance}">${appliance}</li>
+        `
+    })
+    document.querySelector('#appliances').innerHTML = html  
+}
+
+
+//get the ustensils from the recipes and add it in a var called ustensils
+const myUstensils = recipes.map(recipe => recipe.ustensils).flat()
+let ustensilInput = document.getElementById('searchUstensils')
+var options = document.getElementById("ustensils");
+
+
+filteredUstensils = myUstensils.filter((item, index) => myUstensils.indexOf(item) === index)
+
+filteredUstensils.forEach(ustensil => {
+    var opt = document.createElement('option');
+    opt.value = ustensil;
+    opt.innerHTML = ustensil;
+    options.appendChild(opt);
+} );
+
+//on click of additionalSearch-ustensils show ul li list of ustensils
+document.getElementById("additionalSearch-ustensils").addEventListener("click", function(){
+    document.getElementById("ustensils").style.display = "flex";
+    document.getElementById("searchUstensils").style.display = "flex";
+
+});
+
+//filter dinamically the list of ustensils when user search in the input search bar with id "searchUstensils"
+ustensilInput.addEventListener('keyup', (e) => {
+    const searchString = e.target.value.toLowerCase()
+
+    const filteredUstensils = myUstensils.filter((ustensil) => {
+        return (
+            ustensil.toLowerCase().includes(searchString)
+        )
+    })
+        displayUstensils(filteredUstensils)
+
+})
+
+//function displayUstensils to show the filtered ustensils in the html page having id="ustensils"
+
+function displayUstensils(filteredUstensils) {
+    let html = ''
+    filteredUstensils.forEach(ustensil => {
+        html += `
+            <li value="${ustensil}">${ustensil}</li>
+        `
+    })
+    document.querySelector('#ustensils').innerHTML = html  
+}
+
+
+
+
+
+
+
+
+
+//function displayRecipe to show the filtered recipes in the html page having id="recipes"
+function displayRecipes(recipes) {
+    let html = ''
+    recipes.forEach(recipe => {
+        html += `
+            <div class="card">
+              <img src="/placeholder.jpg" class="card-img-top" alt="${recipe.name}">
+              <div class="card-body">
+                <div class="row justify-content-between">
+                    <div class="col-8 card-title">
+                    <h5 class="">${recipe.name}</h5>
+                    </div>
+                    <div class="col-4">
+                    <h5><i class="bi bi-clock"></i> ${recipe.time} min</h5>
+                    </div>
+                </div>
+
+                <div class="row justify-content-between">
+                    <div class="col-6">
+                        <ul class="list-unstyled">
+                        ${recipe.ingredients.map(ingredient => `<li><b>${ingredient.ingredient}:</b> ${ingredient.quantity} ${ingredient.unit}</li>`).join('')}
+                        </ul>
+                    </div>
+                    <div class="col-6 line-clamp">
+                        <p class="card-text line-clamp">${recipe.description}</p>
+                    </div>
+                </div>
+
+              </div>
+            </div>
+
+        `
+    })
+    document.querySelector('#recipes').innerHTML = html  
+}
+
+displayRecipes(recipes)
+
+
+//show dinamycally the recipes in the html page from the input search bar with id "search"
+const search = document.getElementById('search')
+search.addEventListener('keyup', (e) => {
+    const searchString = e.target.value.toLowerCase()
+
+    const filteredRecipes = recipes.filter((recipe) => {
+        return (
+            recipe.name.toLowerCase().includes(searchString) ||
+            recipe.description.toLowerCase().includes(searchString) 
+            
+            
+        )
+    })
+
+//show the result in the html page with id "recipes" if the input search bar is more than 3 characters
+    if (searchString.length > 2) {
+    displayRecipes(filteredRecipes)
+    } else {
+        //show a message in the dom if the input search bar is less than 3 characters 
+        document.querySelector('#recipes').innerHTML = `<p>Aucune recette ne correspond à votre critère… vous pouvez chercher « tarte aux pommes », « poisson », etc</p>`
+    } //else if no recipes match the search criteria, display a message in the dom
+    if (filteredRecipes.length === 0) {
+        document.querySelector('#recipes').innerHTML = `<p>Aucune recette ne correspond à votre critère… vous pouvez chercher « tarte aux pommes », « poisson », etc</p>`
+    }
+
+
+
+})
+
+
+
+
+
+
+//remove the ingredients with the same value in the list of ingredients with id "ingredients"
+const removeDuplicates = (arr) => {
+    let unique_array = []
+    for(let i = 0;i < arr.length; i++){
+        if(unique_array.indexOf(arr[i]) == -1){
+            unique_array.push(arr[i])
+        }
+    }
+    return unique_array
+}
+
+//show the ingredients in the html page with id "ingredients" from the array of ingredients in the recipes array and use removeDuplicates function to remove the duplicates without innerHTML
+
+// const ingredients = recipes.map(recipe => recipe.ingredients.map(ingredient => ingredient.ingredient))
+// const ingredientsList = removeDuplicates(ingredients.flat())
+// const ingredientsHTML = ingredientsList.map(ingredient => `<li id="${ingredient}">${ingredient}</li>`).join('')
+// document.querySelector('#ingredients').innerHTML = ingredientsHTML
+
+
+
+
+//do the same thing with the appliances
+const appliances = recipes.map(recipe => recipe.appliance)
+const appliancesList = removeDuplicates(appliances)
+const appliancesHTML = appliancesList.map(appliance => `<li id="${appliance}">${appliance}</li>`).join('')
+document.querySelector('#appliances').innerHTML = appliancesHTML
+
+//do the same thing with the ustensils
+const ustensils = recipes.map(recipe => recipe.ustensils)
+const ustensilsList = removeDuplicates(ustensils.flat())
+const ustensilsHTML = ustensilsList.map(ustensil => `<li id="${ustensil}">${ustensil}</li>`).join('')
+document.querySelector('#ustensils').innerHTML = ustensilsHTML
+
+//show the ingredients in the html page with id "ingredients" from the array of ingredients in the recipes array and use removeDuplicates function to remove the duplicates with innerHTML
+const ingredients = recipes.map(recipe => recipe.ingredients.map(ingredient => ingredient.ingredient))
+const ingredientsList = removeDuplicates(ingredients.flat())
+const ingredientsHTML = ingredientsList.map(ingredient => `<li id="${ingredient}">${ingredient}</li>`).join('')
+document.querySelector('#ingredients').innerHTML = ingredientsHTML
+
+
+
+
+
+document.getElementById("ingredients").addEventListener("click", function(e){
+    console.log(e.target.id)
+    document.getElementById("tag-section").innerHTML += '<span class="rounded-pill text-bg-primary" id="' + e.target.id + '">' + e.target.id + '<i class="fas fa-times"></i></span>';
+    //remove the tag when the user click on the cross 
+    document.getElementById(e.target.id).addEventListener("click", function(e){
+        document.getElementById(e.target.id).remove()
+    })
+    //filter recipes with the tag selected
+    const filteredRecipes = recipes.filter((recipe) => {
+        return (
+            recipe.ingredients.map(ingredient => ingredient.ingredient).includes(e.target.id)
+        )
+    })
+    displayRecipes(filteredRecipes)
+   
+
+
+
+});
+
