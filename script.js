@@ -1,4 +1,3 @@
-
 //window on load event 
 window.onload = () => {
 
@@ -20,7 +19,6 @@ function displayRecipes(recipes) {
                     <h5><i class="bi bi-clock"></i> ${recipe.time} min</h5>
                     </div>
                 </div>
-
                 <div class="row justify-content-between">
                     <div class="col-6">
                         <ul class="list-unstyled">
@@ -31,10 +29,8 @@ function displayRecipes(recipes) {
                         <p class="card-text line-clamp">${recipe.description}</p>
                     </div>
                 </div>
-
               </div>
             </div>
-
         `
     })
     document.querySelector('#recipes').innerHTML = html  
@@ -375,6 +371,3 @@ search.addEventListener('keyup', (e) => {
 
 
 }
-
-
-
