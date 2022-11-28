@@ -180,7 +180,7 @@ const recipes = [
         "time": 45,
         "description": "Etaler la pâte feuilleté aux dimensions du moule, étaler la moutarde sur la pâte feuilleté, ajouter le thon. Découper les tomates en rondelles et les poser sur le poisson, ajouter un peu de crème fraiche sur toute la tarte et recouvrez de gruyère râpé. Cuire au four 30 minutes",
         "appliance":"Four",
-        "ustensils": ["moule à tarte", "râpe à fromage", "couteau"]
+        "ustensils": ["moule à tarte", "râpe à fromage", "Couteau"]
     },
     {
         "id": 6,

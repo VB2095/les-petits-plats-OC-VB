@@ -6,12 +6,16 @@ header {
     border: none;
     background: #E7E7E7;
     padding: 20px;
+    outline: #E7E7E7;
 
 }
-
+.form-control:focus{
+  background: #E7E7E7!important;
+  box-shadow: none!important;
+}
 .searchbar button {
     border: none;
-    background: #E7E7E7 ;
+    background: #E7E7E7;
 }
 
 .btn-group{
@@ -84,10 +88,22 @@ header {
   .additionalSearch {
     display: flex;
     align-items: flex-start;
+    flex-wrap: wrap;
     max-height: 120px;
     position: relative;
     z-index: 2;
 }
+details {
+    margin-bottom: 10px;
+}
+@media screen and (max-width: 768px) {
+    .additionalSearch {
+        justify-content: center;
+    }
+    
+}
+  
+
 
   summary {
   display: flex!important;
@@ -126,9 +142,15 @@ header {
   .additionalSearch details {
     margin-right: 20px;
     border-radius: 5px;
-    padding: 10px;
+    padding: 0 20px 0 20px;
     color: #fff;
-    width: 300px;
+    width: 210px;
+  }
+
+  .additionalSearch details[open] {
+    max-width: 600px;
+    width: 100%;
+    transition: 0.2s;
   }
   .additionalSearch-ingredients {
     background-color: #3282F7;
@@ -140,9 +162,8 @@ header {
     background-color: #ED6454;
   }
 
-  .details ul {
-    width: 400px;
-    height: 400px;
+  .dropdown-menu-ingredients, .dropdown-menu-appliances, .dropdown-menu-ustensils {
+    height: 350px;
     max-height: 100%;
     overflow: auto;
     overflow-x: scroll;
@@ -151,8 +172,15 @@ header {
     flex-direction: column;
     flex-wrap: wrap;
     list-style: none;
-    font: 18px;
+    font-size: 18px;
+    
   }
+
+  .dropdown-menu-ingredients li, .dropdown-menu-appliances li, .dropdown-menu-ustensils li {
+    padding: 10px;
+    
+  }
+
   .list-group-item {
     display: flex;
     justify-content: space-between;
@@ -172,7 +200,10 @@ header {
   display: none;
  }
 
- .rotate ::before{
+ .rotate {
   transform: rotate(180deg);
   transition: 0.5s;
  }
+
+
+ 
