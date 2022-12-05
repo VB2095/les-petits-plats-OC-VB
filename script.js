@@ -116,18 +116,70 @@ document.getElementById("search").addEventListener("keyup", function(event) {
         let ustensil = filtered_unique_ustensils[i];
         document.getElementById("ustensils").innerHTML += `<li class="list-group-item" id="${ustensil}">${ustensil}</li>`
     }
-
-    //keep the search bar value so it always match the filtered ingredients, appliances and ustensils 
-    document.getElementById("search").value = search;
-    console.log(search);
 });
 
 
 
 
 
+// document.getElementById("search-ingredients").addEventListener("keyup", function(event) {
+//     let search = document.getElementById("search-ingredients").value;
+//     let filtered_recipes = recipes.filter(recipe => recipe.ingredients.map(ingredient => ingredient.ingredient).join(' ').toLowerCase().includes(search.toLowerCase()));
+//     document.getElementById("recipes").innerHTML = "";
 
+//     for (let i = 0; i < filtered_recipes.length; i++) {
+//         let recipe = filtered_recipes[i];
+//         document.getElementById("recipes").innerHTML += `<div class="card">
+//         <img src="/placeholder.jpg" class="card-img-top" alt="${recipe.name}">
+//         <div class="card-body">
+//           <div class="row justify-content-between">
+//               <div class="col-8 card-title">
+//               <h5 class="">${recipe.name}</h5>
+//               </div>
+//               <div class="col-4">
+//               <h5><i class="bi bi-clock"></i> ${recipe.time} min</h5>
+//               </div>
+//           </div>
+//           <div class="row justify-content-between">
+//               <div class="col-6">
+//                   <ul class="list-unstyled">
+//                   ${recipe.ingredients.map(ingredient => `<li><b>${ingredient.ingredient}:</b> ${ingredient.quantity} ${ingredient.unit}</li>`).join('')}
+//                   </ul>
+//               </div>
+//               <div class="col-6 line-clamp">
+//                   <p class="card-text line-clamp">${recipe.description}</p>
+//               </div>
+//           </div>
+//         </div>
+//       </div>`
+//     }
 
+//     let filtered_ingredients = filtered_recipes.map(recipe => recipe.ingredients.map(ingredient => ingredient.ingredient)).flat();
+//     let filtered_unique_ingredients = filtered_ingredients.filter((ingredient, index) => filtered_ingredients.indexOf(ingredient) === index);
+//     document.getElementById("ingredients").innerHTML = "";
+//     for (let i = 0; i < filtered_unique_ingredients.length; i++) {
+//         let ingredient = filtered_unique_ingredients[i];
+//         document.getElementById("ingredients").innerHTML += `<li class="list-group-item" id="${ingredient}">${ingredient}</li>`
+//     }
+
+//     let filtered_appliance = filtered_recipes.map(recipe => recipe.appliance);
+//     let filtered_unique_appliance = filtered_appliance.filter((appliance, index) => filtered_appliance.indexOf(appliance) === index);
+//     document.getElementById("appliances").innerHTML = "";
+//     for (let i = 0; i < filtered_unique_appliance.length; i++) {
+//         let appliance = filtered_unique_appliance[i];
+//         document.getElementById("appliances").innerHTML += `<li class="list-group-item" id="${appliance}">${appliance}</li>`
+//     }
+
+//     let filtered_ustensils = filtered_recipes.map(recipe => recipe.ustensils);
+//     let filtered_all_ustensils = filtered_ustensils.flat();
+//     let filtered_unique_ustensils = filtered_all_ustensils.filter((ustensil, index) => filtered_all_ustensils.indexOf(ustensil) === index);
+//     filtered_unique_ustensils = filtered_unique_ustensils.map(ustensil => ustensil.charAt(0).toUpperCase() + ustensil.slice(1));
+//     document.getElementById("ustensils").innerHTML = "";
+//     for (let i = 0; i < filtered_unique_ustensils.length; i++) {
+//         let ustensil = filtered_unique_ustensils[i];
+//         document.getElementById("ustensils").innerHTML += `<li class="list-group-item" id="${ustensil}">${ustensil}</li>`
+//     }
+// });
 
 
 
