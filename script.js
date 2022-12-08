@@ -253,6 +253,24 @@ document.getElementById("ustensils").addEventListener("click", function(e){
 
 });
 
+document.getElementById("appliances").addEventListener("click", function(e){
+    
+    document.getElementById("tag-section").innerHTML += '<span class="rounded-pill tag-appliances text-bg-primary tag" id="' + e.target.id + '">' + e.target.id + '<i class="bi bi-x-circle"></i></span>';
+
+    //filter recipes with the tag selected
+    const filteredRecipes = recipes.filter((recipe) => {
+        return (
+            recipe.appliance === e.target.id
+        )
+    })
+
+    displayRecipes(filteredRecipes)
+    //actualiser les listes des ingrédients, ustensils et appareils avec les ingrédients, ustensils et appareils qui sont contenus dans les recettes qui correspondent aux filtres sélectionnés
+    filterListByTags()
+
+});
+
+
 
 
 
@@ -368,6 +386,22 @@ search.addEventListener('keyup', (e) => {
 })
 
 
-
+//prevent the recipes to be filtered if there is tag selected 
+document.getElementById("tag-section").addEventListener("click", function(e){
+    if (e.target.tagName === "I") {
+        e.target.parentNode.remove()
+    }
+    const filteredRecipes = recipes.filter((recipe) => {
+        return (
+            recipe.ingredients.includes(e.target.id) ||
+            recipe.ustensils.includes(e.target.id) ||
+            recipe.appliance.includes(e.target.id)
+        )
+    })
+    console.log(e.target.id)
+    displayRecipes(filteredRecipes)
+    //actualiser les listes des ingrédients, ustensils et appareils avec les ingrédients, ustensils et appareils qui sont contenus dans les recettes qui correspondent aux filtres sélectionnés
+    filterListByTags()
+});
 
 }
