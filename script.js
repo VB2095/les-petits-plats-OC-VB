@@ -209,7 +209,7 @@ function filterListByTags() {
 
 document.getElementById("ingredients").addEventListener("click", function(e){
     
-    document.getElementById("tag-section").innerHTML += '<span class="rounded-pill text-bg-primary tag" id="' + e.target.id + '">' + e.target.id + '<i class="fas fa-times"></i></span>';
+    document.getElementById("tag-section").innerHTML += '<span class="rounded-pill tag-ingredients text-bg-primary tag" id="' + e.target.id + '">' + e.target.id + '<i class="bi bi-x-circle"></i></span>';
     //remove the tag when the user click on the cross 
     document.getElementById(e.target.id).addEventListener("click", function(e){
         document.getElementById(e.target.id).remove()
@@ -236,7 +236,7 @@ console.log (filterListByTags())
 
 document.getElementById("ustensils").addEventListener("click", function(e){
 
-    document.getElementById("tag-section").innerHTML += '<span class="rounded-pill text-bg-primary tag" id="' + e.target.id + '">' + e.target.id + '<i class="fas fa-times"></i></span>';
+    document.getElementById("tag-section").innerHTML += '<span class="rounded-pill tag-ustensils text-bg-primary tag" id="' + e.target.id + '">' + e.target.id + '<i class="bi bi-x-circle"></i></span>';
     
 
 
