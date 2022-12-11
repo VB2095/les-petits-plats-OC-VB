@@ -1,8 +1,19 @@
 //window on load event 
 window.onload = () => {
 
+//If there is an undefined value somewhere in the recipes.json file, replace it with an empty string
+recipes.forEach(recipe => {
+    recipe.name = recipe.name || ''
+    recipe.description = recipe.description || ''
+    recipe.ingredients.forEach(ingredient => {
+        ingredient.ingredient = ingredient.ingredient || ''
+        ingredient.quantity = ingredient.quantity || ''
+        ingredient.unit = ingredient.unit || ''
+    })
+    recipe.appliance = recipe.appliance || ''
+    recipe.ustensils = recipe.ustensils || []
+})
 
-console.log ('Recipes: ', recipes);
 
 function displayRecipes(recipes) {
     let html = ''
@@ -36,6 +47,11 @@ function displayRecipes(recipes) {
     document.querySelector('#recipes').innerHTML = html  
 }
 
+//if there is undefined in the unit of a recipe, replace it with an empty string
+
+
+
+
 displayRecipes(recipes)
 
 //get a list of all the ingredients in the recipes array and add the id of the recipe to the ingredient object as a property, capitalize the first letter of the ingredient name and remove the duplicates from the array
@@ -50,10 +66,6 @@ function getIngredients (recipes) {
     })
     return ingredients.filter((ingredient, index, self) => self.findIndex(t => t.ingredient === ingredient.ingredient) === index)
 }
-
-
-//console log the ingredients array 
-console.log('Ingredients: ', getIngredients(recipes))
 
 //get a list of all the ustensils in the recipes array and add the id of the recipe to the ustensil object as a property and remove duplicates
 function getUstensils(recipes) {
@@ -77,9 +89,6 @@ function getAppliances(recipes) {
     })
     return appliances
 }
-
-//console log the appliances array
-console.log('Appliances: ', getAppliances(recipes))
 
 //add the ingredients, ustensils and appliances arrays as a list of options to the ul list in the html file 
 function addOptionsToSelects(ingredients, ustensils, appliances) {
@@ -224,14 +233,9 @@ document.getElementById("ingredients").addEventListener("click", function(e){
         )
         
     })
-    console.log(e.target.id)
     displayRecipes(filteredRecipes)
     //actualiser les listes des ingrédients, ustensils et appareils avec les ingrédients, ustensils et appareils qui sont contenus dans les recettes qui correspondent aux filtres sélectionnés
     filterListByTags()
-
-console.log (filterListByTags())
-
-
 });
 
 document.getElementById("ustensils").addEventListener("click", function(e){
@@ -398,7 +402,6 @@ document.getElementById("tag-section").addEventListener("click", function(e){
             recipe.appliance.includes(e.target.id)
         )
     })
-    console.log(e.target.id)
     displayRecipes(filteredRecipes)
     //actualiser les listes des ingrédients, ustensils et appareils avec les ingrédients, ustensils et appareils qui sont contenus dans les recettes qui correspondent aux filtres sélectionnés
     filterListByTags()
