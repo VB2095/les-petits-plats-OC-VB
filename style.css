@@ -209,3 +209,35 @@ display: none;
 transform: rotate(180deg);
 transition: 0.5s;
 }
+
+#tag-section {
+  display: flex;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+  gap: 10px;
+}
+
+#tag-section > .rounded-pill {
+  padding: 10px;
+  cursor: pointer;
+  border-radius: 8px !important;
+}
+
+#tag-section > .tag-ustensils {
+  background-color: #ee5e5a !important;
+  color: #fff;
+}
+
+#tag-section > .tag-appliances {
+  background-color: #68d9a4 !important;
+  color: #fff;
+} 
+
+#tag-section > .tag-ingredients {
+  background-color: #3282f7 !important;
+  color: #fff;
+}
+
+#tag-section > .tag-ingredients i, #tag-section > .tag-appliances i , #tag-section > .tag-ustensils i {
+  padding-left: 5px;
+}
