@@ -1,6 +1,41 @@
 //window on load event 
 window.onload = () => {
 
+
+    const details = document.querySelectorAll("details");
+
+    details.forEach (targetDetail => {
+        targetDetail.addEventListener("toggle", closeDetails);
+    });
+    
+    
+    
+    
+    function closeDetails() {
+        const summary = document.querySelectorAll("summary");
+        const input = document.querySelector("summary>input");
+        const p = document.querySelector("summary>p");
+        const span = document.querySelector("summary>span");
+        if (this.open) {
+            details.forEach(detail => {
+                if (detail !== this) {
+                    detail.removeAttribute("open");
+                }
+            });
+    
+            
+            span.classList.add("rotate");
+            p.classList.add("hidden");
+            input.classList.add("active");
+            input.focus();
+        } else {
+            input.classList.remove("active");
+            p.classList.add("active");
+            p.classList.remove("hidden");
+            span.classList.remove("rotate");
+        }
+    }
+    
 //If there is an undefined value somewhere in the recipes.json file, replace it with an empty string
 recipes.forEach(recipe => {
     recipe.name = recipe.name || ''
@@ -46,11 +81,6 @@ function displayRecipes(recipes) {
     })
     document.querySelector('#recipes').innerHTML = html  
 }
-
-//if there is undefined in the unit of a recipe, replace it with an empty string
-
-
-
 
 displayRecipes(recipes)
 
@@ -211,32 +241,63 @@ function filterListByTags() {
     })
 
     addOptionsToSelects(ingredients, ustensils, appliances)
+    addTagIngredient();
+
 }
 
 
 
 
-document.getElementById("ingredients").addEventListener("click", function(e){
-    
-    document.getElementById("tag-section").innerHTML += '<span class="rounded-pill tag-ingredients text-bg-primary tag" id="' + e.target.id + '">' + e.target.id + '<i class="bi bi-x-circle"></i></span>';
-    //remove the tag when the user click on the cross 
-    document.getElementById(e.target.id).addEventListener("click", function(e){
-        document.getElementById(e.target.id).remove()
-        filterListByTags()
-        displayRecipes(filteredRecipes)
-    })
-    // //filter recipes with the tag selected
-    const filteredRecipes = recipes.filter((recipe) => {
-        return (
-            recipe.ingredients.map(ingredient => ingredient.ingredient).includes(e.target.id)
+function addTagIngredient () { 
+    const ingredient = document.getElementById("ingredients"); 
+const ingredientList = ingredient.querySelectorAll("li");
+    ingredientList.forEach(function(ingredient) {
+        ingredient.addEventListener("click", function(e) {
+          const tagSection = document.getElementById("tag-section");
+          // Vérifiez si l'élément a déjà été ajouté à la section "tag-section".
+          if (!tagSection.querySelector(`#${e.target.id}`)) {
+            // Si l'élément n'a pas encore été ajouté, ajoutez-le à la section "tag-section".
+            tagSection.innerHTML += '<span class="rounded-pill tag-ingredients text-bg-primary tag" id="' + e.target.id + '">' + e.target.id + '<i class="bi bi-x-circle"></i></span>';
             
-        )
+            const filteredRecipes = recipes.filter((recipe) => {
+              return (
+                recipe.ingredients.map(ingredient => ingredient.ingredient).includes(e.target.id)
+              )
+            });
+            
+            // Filtrez la liste de recettes et affichez les résultats.
+            filterListByTags();
+            displayRecipes(filteredRecipes);
+            console.log('clicked');
+          }
+        });
+      });
+      
+}
+
+addTagIngredient();
+
+// document.getElementById("ingredients").addEventListener("click", function(e){
+    
+//     document.getElementById("tag-section").innerHTML += '<span class="rounded-pill tag-ingredients text-bg-primary tag" id="' + e.target.id + '">' + e.target.id + '<i class="bi bi-x-circle"></i></span>';
+//     //remove the tag when the user click on the cross 
+//     document.getElementById(e.target.id).addEventListener("click", function(e){
+//         // document.getElementById(e.target.id).remove()
+//         filterListByTags()
+//         displayRecipes(filteredRecipes)
+//     })
+//     // //filter recipes with the tag selected
+//     const filteredRecipes = recipes.filter((recipe) => {
+//         return (
+//             recipe.ingredients.map(ingredient => ingredient.ingredient).includes(e.target.id)
+            
+//         )
         
-    })
-    displayRecipes(filteredRecipes)
-    //actualiser les listes des ingrédients, ustensils et appareils avec les ingrédients, ustensils et appareils qui sont contenus dans les recettes qui correspondent aux filtres sélectionnés
-    filterListByTags()
-});
+//     })
+//     displayRecipes(filteredRecipes)
+//     //actualiser les listes des ingrédients, ustensils et appareils avec les ingrédients, ustensils et appareils qui sont contenus dans les recettes qui correspondent aux filtres sélectionnés
+//     filterListByTags()
+// });
 
 document.getElementById("ustensils").addEventListener("click", function(e){
 
@@ -279,10 +340,9 @@ document.getElementById("appliances").addEventListener("click", function(e){
 
 
 //add the event listener to the search input to filter the list of ingredients, ustensils and appliances and display the matching recipes 
-document.querySelector('#search', 'searchIngredients').addEventListener('keyup', () => {
-    filterList()
-    closeDetails()
-})
+// document.querySelector('#search', 'searchIngredients').addEventListener('keyup', () => {
+//     filterList()
+// })
 
 //filter the list of ingredients with the matching value when user search on the input with id searchIngredients 
 document.querySelector('#searchIngredients').addEventListener('keyup', () => {
@@ -320,43 +380,6 @@ document.querySelector('#searchAppliances').addEventListener('keyup', () => {
 })
 
 
-const details = document.querySelectorAll("details");
-
-details.forEach (targetDetail => {
-    targetDetail.addEventListener("toggle", closeDetails);
-});
-
-
-
-
-function closeDetails() {
-    if (this.open) {
-        details.forEach(detail => {
-            if (detail !== this) {
-                detail.removeAttribute("open");
-            }
-        });
-
-        const summary = this.querySelector("summary");
-        const input = summary.querySelector("input");
-        const p = summary.querySelector("p");
-        const span = summary.querySelector("span");
-        span.classList.add("rotate");
-        p.classList.add("hidden");
-        input.classList.add("active");
-        //input focus 
-        input.focus();
-    } else {
-        const summary = this.querySelector("summary");
-        const input = summary.querySelector("input");
-        const span = summary.querySelector("span");
-        const p = summary.querySelector("p");
-        input.classList.remove("active");
-        p.classList.add("active");
-        p.classList.remove("hidden");
-        span.classList.remove("rotate");
-    }
-}
 
 
 
@@ -380,6 +403,8 @@ search.addEventListener('keyup', (e) => {
 //show the result in the html page with id "recipes" if the input search bar is more than 3 characters
     if (searchString.length > 2) {
     displayRecipes(filteredRecipes)
+    //filter the list of ingredients, ustensils and appliances with the matching value when user search on the input with id search
+    filterList()
     } else {
         //show a message in the dom if the input search bar is less than 3 characters 
         document.querySelector('#recipes').innerHTML = `<p>Aucune recette ne correspond à votre critère… vous pouvez chercher « tarte aux pommes », « poisson », etc</p>`
@@ -389,22 +414,5 @@ search.addEventListener('keyup', (e) => {
     }
 })
 
-
-//prevent the recipes to be filtered if there is tag selected 
-document.getElementById("tag-section").addEventListener("click", function(e){
-    if (e.target.tagName === "I") {
-        e.target.parentNode.remove()
-    }
-    const filteredRecipes = recipes.filter((recipe) => {
-        return (
-            recipe.ingredients.includes(e.target.id) ||
-            recipe.ustensils.includes(e.target.id) ||
-            recipe.appliance.includes(e.target.id)
-        )
-    })
-    displayRecipes(filteredRecipes)
-    //actualiser les listes des ingrédients, ustensils et appareils avec les ingrédients, ustensils et appareils qui sont contenus dans les recettes qui correspondent aux filtres sélectionnés
-    filterListByTags()
-});
 
 }
