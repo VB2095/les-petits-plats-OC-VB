@@ -2,41 +2,20 @@
 window.onload = () => {
 
 
-    const details = document.querySelectorAll("details");
-
-    details.forEach (targetDetail => {
-        targetDetail.addEventListener("toggle", closeDetails);
+    recipes.forEach((recipe) => {
+      recipe.ustensils = recipe.ustensils.map(
+        (ustensil) => ustensil.charAt(0).toUpperCase() + ustensil.slice(1)
+      );
+      recipe.ingredients.forEach((ingredient) => {
+        ingredient.ingredient =
+          ingredient.ingredient.charAt(0).toUpperCase() +
+          ingredient.ingredient.slice(1);
+      });
+      recipe.appliance =
+        recipe.appliance.charAt(0).toUpperCase() + recipe.appliance.slice(1);
     });
-    
-    
-    
-    
-    function closeDetails() {
-        const summary = document.querySelectorAll("summary");
-        const input = document.querySelector("summary>input");
-        const p = document.querySelector("summary>p");
-        const span = document.querySelector("summary>span");
-        if (this.open) {
-            details.forEach(detail => {
-                if (detail !== this) {
-                    detail.removeAttribute("open");
-                }
-            });
-    
-            
-            span.classList.add("rotate");
-            p.classList.add("hidden");
-            input.classList.add("active");
-            input.focus();
-        } else {
-            input.classList.remove("active");
-            p.classList.add("active");
-            p.classList.remove("hidden");
-            span.classList.remove("rotate");
-        }
-    }
-    
-//If there is an undefined value somewhere in the recipes.json file, replace it with an empty string
+ 
+    //If there is an undefined value somewhere in the recipes.json file, replace it with an empty string
 recipes.forEach(recipe => {
     recipe.name = recipe.name || ''
     recipe.description = recipe.description || ''
@@ -49,6 +28,49 @@ recipes.forEach(recipe => {
     recipe.ustensils = recipe.ustensils || []
 })
 
+let all_ingredients = recipes.map(recipe => recipe.ingredients.map(ingredient => ingredient.ingredient)).flat()
+let all_ustensils = recipes.map(recipe => recipe.ustensils).flat()
+let all_appliances = recipes.map(recipe => recipe.appliance)
+
+let unique_ingredients = [...new Set(all_ingredients)]
+let unique_ustensils = [...new Set(all_ustensils)]
+let unique_appliances = [...new Set(all_appliances)]
+
+
+
+    const details = document.querySelectorAll("details");
+
+    details.forEach((targetDetail) => {
+      targetDetail.addEventListener("toggle", closeDetails);
+    });
+
+    function closeDetails() {
+      const summary = this.querySelector("summary");
+      const input = summary.querySelector("input");
+      const p = summary.querySelector("p");
+      const span = summary.querySelector("span");
+      if (this.open) {
+        details.forEach((detail) => {
+          if (detail !== this) {
+            detail.removeAttribute("open");
+          }
+        });
+        input.addEventListener("blur", () => {
+          this.setAttribute("open", "");
+        });
+        span.classList.add("rotate");
+        p.classList.add("hidden");
+        input.classList.add("active");
+        input.focus();
+      } else {
+        input.classList.remove("active");
+        p.classList.add("active");
+        p.classList.remove("hidden");
+        span.classList.remove("rotate");
+      }
+    }
+    
+    
 
 function displayRecipes(recipes) {
     let html = ''
@@ -84,302 +106,377 @@ function displayRecipes(recipes) {
 
 displayRecipes(recipes)
 
-//get a list of all the ingredients in the recipes array and add the id of the recipe to the ingredient object as a property, capitalize the first letter of the ingredient name and remove the duplicates from the array
-function getIngredients (recipes) {
-    let ingredients = []
-    recipes.forEach(recipe => {
-        recipe.ingredients.forEach(ingredient => {
-            ingredient.recipeId = recipe.id
-            ingredient.ingredient = ingredient.ingredient.charAt(0).toUpperCase() + ingredient.ingredient.slice(1)
-            ingredients.push(ingredient)
-        })
-    })
-    return ingredients.filter((ingredient, index, self) => self.findIndex(t => t.ingredient === ingredient.ingredient) === index)
-}
-
-//get a list of all the ustensils in the recipes array and add the id of the recipe to the ustensil object as a property and remove duplicates
-function getUstensils(recipes) {
-    let ustensils = []
-    recipes.forEach(recipe => {
-        recipe.ustensils.forEach(ustensil => {
-            ustensil.recipeId = recipe.id
-            ustensils.push(ustensil)
-        })
-    })
-    return [...new Set(ustensils)]
-}
 
 
-//get a list of all the appliances in the recipes array and add the id of the recipe to the appliance object as a property
-function getAppliances(recipes) {
-    let appliances = []
-    recipes.forEach(recipe => {
-        recipe.appliance.recipeId = recipe.id
-        appliances.push(recipe.appliance)
-    })
-    return appliances
-}
 
-//add the ingredients, ustensils and appliances arrays as a list of options to the ul list in the html file 
-function addOptionsToSelects(ingredients, ustensils, appliances) {
+
+
+//add the ingredients, ustensils and appliances arrays as a list of options to the ul list in the html file using unique_ingredients, unique_ustensils and unique_appliances
+function addOptionsToLists(unique_ingredients, unique_ustensils, unique_appliances) {
     let html = ''
-    ingredients.forEach(ingredient => {
+    unique_ingredients.forEach(ingredient => {
         html += `
-            <li class="list-group-item" id="${ingredient.ingredient}">${ingredient.ingredient}</li>
+            <li class="select-ingredient" id="${ingredient}">${ingredient}</li>
         `
     })
     document.querySelector('#ingredients').innerHTML = html
 
     html = ''
-    ustensils.forEach(ustensil => {
+    unique_ustensils.forEach(ustensil => {
         html += `
-            <li class="list-group-item" id="${ustensil}">${ustensil}</li>
+            <li class="select-ustensil" id="${ustensil}">${ustensil}</li>
         `
     })
     document.querySelector('#ustensils').innerHTML = html
 
     html = ''
-    appliances.forEach(appliance => {
+    unique_appliances.forEach(appliance => {
         html += `
-            <li class="list-group-item" id="${appliance}">${appliance}</li>
+            <li class="select-appliance" id="${appliance}">${appliance}</li>
         `
     })
     document.querySelector('#appliances').innerHTML = html
+}
+
+addOptionsToLists(unique_ingredients, unique_ustensils, unique_appliances)
+
+
+
+
+
+//function createTag() to create a tag in the html file with the id of the selected ingredient, ustensil or appliance
+function createTag(e) {
+    let tagSection = document.querySelector('#tag-section')
+    let tag = document.createElement('span')
+    if (e.target.classList.contains('select-ingredient')) {
+        tag.classList.add('rounded-pill', 'tag-ingredients', 'text-bg-primary', 'tag')
+    } else if (e.target.classList.contains('select-ustensil')) {
+        tag.classList.add('rounded-pill', 'tag-ustensils', 'text-bg-primary', 'tag')
+    } else if (e.target.classList.contains('select-appliance')) {
+        tag.classList.add('rounded-pill', 'tag-appliances', 'text-bg-primary', 'tag')
+    }
+
+    tag.id = e.target.id
+    tag.innerHTML = e.target.id + '<i class="bi bi-x-circle"></i>'
+    tagSection.appendChild(tag)
+
+}
+
+//appeler la fonction createTag() quand on clique sur un ingredient, ustensil ou appliance 
+const ingredients = document.querySelector('#ingredients')
+ingredients.addEventListener('click', (e) => {
+    if (e.target.classList.contains('select-ingredient')) {
+        createTag(e)
+        filterLists()
+        filterRecipes()
+        clearInputSearch()
+    }
+})
+
+const ustensils = document.querySelector('#ustensils')
+ustensils.addEventListener('click', (e) => {
+    if (e.target.classList.contains('select-ustensil')) {
+        createTag(e)
+        filterLists()
+        filterRecipes()
+        clearInputSearchUstensils()
+        
+    }
+})
+
+const appliances = document.querySelector('#appliances')
+appliances.addEventListener('click', (e) => {
+    if (e.target.classList.contains('select-appliance')) {
+        createTag(e)
+        filterLists()
+        filterRecipes()
+        clearInputSearchAppliances()
+    }
+})
+
+//remove the tag when we click on the cross
+const tagSection = document.querySelector('#tag-section')
+tagSection.addEventListener('click', (e) => {
+    if (e.target.classList.contains('bi-x-circle')) {
+        e.target.parentElement.remove()
+        filterLists()
+        filterRecipes()
+
+    }
+})
+
+//filtrer les listes en ne gardant que les ingredients, ustensils et appliances qui sont contenus dans les recettes qui correspondent aux tags selectionnés et en retirant l'élément selectionné de la liste des options 
+function filterLists() {
+    let tagIngredients = document.querySelectorAll('.tag-ingredients')
+    let tagUstensils = document.querySelectorAll('.tag-ustensils')
+    let tagAppliances = document.querySelectorAll('.tag-appliances')
+    let ingredients = document.querySelector('#ingredients')
+    let ustensils = document.querySelector('#ustensils')
+    let appliances = document.querySelector('#appliances')
+
+    let filteredRecipes = recipes
+
+    if (tagIngredients.length > 0) {
+        tagIngredients.forEach(tag => {
+            filteredRecipes = filteredRecipes.filter(recipe => recipe.ingredients.some(ingredient => ingredient.ingredient === tag.id))
+        })
+    }
+
+    if (tagUstensils.length > 0) {
+        tagUstensils.forEach(tag => {
+            filteredRecipes = filteredRecipes.filter(recipe => recipe.ustensils.some(ustensil => ustensil === tag.id))
+        })
+    }
+
+    if (tagAppliances.length > 0) {
+        tagAppliances.forEach(tag => {
+            filteredRecipes = filteredRecipes.filter(recipe => recipe.appliance === tag.id)
+        })
+    }
     
+    let filteredIngredients = []
+    let filteredUstensils = []
+    let filteredAppliances = []
 
-   
-
-}
-
-
-addOptionsToSelects(getIngredients(recipes), getUstensils(recipes), getAppliances(recipes))
-//actualiser les listes des ingredients, ustensils et appareils avec les ingredients, ustensils et appareils qui sont contenus dans les recettes qui correspondent à la recherche et qui correspondent aux filtres sélectionnés 
-
-
-function filterList() {
-    let ingredients = []
-    let ustensils = []
-    let appliances = []
-
-    recipes.forEach(recipe => {
-        if (recipe.name.toLowerCase().includes(document.querySelector('#search').value.toLowerCase())) {  
-            recipe.ingredients.forEach(ingredient => {
-                ingredient.recipeId = recipe.id
-                ingredients.push(ingredient)
-            })
-            recipe.ustensils.forEach(ustensil => {
-                ustensil.recipeId = recipe.id
-                ustensils.push(ustensil)
-            })
-            recipe.appliance.recipeId = recipe.id
-            appliances.push(recipe.appliance)
-        }
-    })
-
-
-    addOptionsToSelects(ingredients, ustensils, appliances)
-}
-
-
-
-//actualiser la liste des ingrédients, ustensils et appareils avec les tag contenu dans la section tag-section en comparant les id des tags avec les valeurs des ingrédiens, ustensils et appareils contenus dans les recettes
-function filterListByTags() {
-    let ingredients = []
-    let ustensils = []
-    let appliances = []
-
-    recipes.forEach(recipe => {
-        let ingredientMatch = 0
-        let ustensilMatch = 0
-        let applianceMatch = 0
+    filteredRecipes.forEach(recipe => {
         recipe.ingredients.forEach(ingredient => {
-            ingredient.recipeId = recipe.id
-            document.querySelectorAll('.tag').forEach(tag => {
-                if (tag.id === ingredient.ingredient) {
-                    ingredientMatch++
-                }
-            })
-        })
-        recipe.ustensils.forEach(ustensil => {
-            ustensil.recipeId = recipe.id
-            document.querySelectorAll('.tag').forEach(tag => {
-                if (tag.id === ustensil) {
-                    ustensilMatch++
-                }
-            })
-        })
-        recipe.appliance.recipeId = recipe.id
-        document.querySelectorAll('.tag').forEach(tag => {
-            if (tag.id === recipe.appliance) {
-                applianceMatch++
+            if (!filteredIngredients.includes(ingredient.ingredient)) {
+                filteredIngredients.push(ingredient.ingredient)
             }
         })
-        if (ingredientMatch === document.querySelectorAll('.tag').length || ustensilMatch === document.querySelectorAll('.tag').length || applianceMatch === document.querySelectorAll('.tag').length) {
-            recipe.ingredients.forEach(ingredient => {
-                ingredient.recipeId = recipe.id
-                ingredients.push(ingredient)
-            })
-            recipe.ustensils.forEach(ustensil => {
-                ustensil.recipeId = recipe.id
-                ustensils.push(ustensil)
-            })
-            recipe.appliance.recipeId = recipe.id
-            appliances.push(recipe.appliance)
+        recipe.ustensils.forEach(ustensil => {
+            if (!filteredUstensils.includes(ustensil)) {
+                filteredUstensils.push(ustensil)
+            }
+        })
+        if (!filteredAppliances.includes(recipe.appliance)) {
+            filteredAppliances.push(recipe.appliance)
         }
     })
+
+    ingredients.innerHTML = ''
+    ustensils.innerHTML = ''
+    appliances.innerHTML = ''
+
+    addOptionsToLists(filteredIngredients, filteredUstensils, filteredAppliances)
     
+}
 
+//display the recipes that match the tags selected 
+function filterRecipes() {
+    let tagIngredients = document.querySelectorAll('.tag-ingredients')
+    let tagUstensils = document.querySelectorAll('.tag-ustensils')
+    let tagAppliances = document.querySelectorAll('.tag-appliances')
+    
+    let filteredRecipes = recipes
+    
+    if (tagIngredients.length > 0) {
+        tagIngredients.forEach(tag => {
+            filteredRecipes = filteredRecipes.filter(recipe => recipe.ingredients.some(ingredient => ingredient.ingredient === tag.id))
+        })
+    }
 
+    if (tagUstensils.length > 0) {
+        tagUstensils.forEach(tag => {
+            filteredRecipes = filteredRecipes.filter(recipe => recipe.ustensils.some(ustensil => ustensil === tag.id))
+        })
+    }
 
+    if (tagAppliances.length > 0) {
+        tagAppliances.forEach(tag => {
+            filteredRecipes = filteredRecipes.filter(recipe => recipe.appliance === tag.id)
+        })
+    }
 
-    //remove the selected tag from the list of ingredients, ustensils and appliances
-    document.querySelectorAll('.tag').forEach(tag => {
-        ingredients = ingredients.filter(ingredient => ingredient.ingredient !== tag.id)
-        ustensils = ustensils.filter(ustensil => ustensil !== tag.id)
-        appliances = appliances.filter(appliance => appliance !== tag.id)
-                                
-    })
-
-    addOptionsToSelects(ingredients, ustensils, appliances)
-    addTagIngredient();
-
+    displayRecipes(filteredRecipes)
+    removeSelectedIngredient()
+    removeSelectedUstensils()
+    removeSelectedAppliances()
 }
 
 
 
 
-function addTagIngredient () { 
-    const ingredient = document.getElementById("ingredients"); 
-const ingredientList = ingredient.querySelectorAll("li");
-    ingredientList.forEach(function(ingredient) {
-        ingredient.addEventListener("click", function(e) {
-          const tagSection = document.getElementById("tag-section");
-          // Vérifiez si l'élément a déjà été ajouté à la section "tag-section".
-          if (!tagSection.querySelector(`#${e.target.id}`)) {
-            // Si l'élément n'a pas encore été ajouté, ajoutez-le à la section "tag-section".
-            tagSection.innerHTML += '<span class="rounded-pill tag-ingredients text-bg-primary tag" id="' + e.target.id + '">' + e.target.id + '<i class="bi bi-x-circle"></i></span>';
-            
-            const filteredRecipes = recipes.filter((recipe) => {
-              return (
-                recipe.ingredients.map(ingredient => ingredient.ingredient).includes(e.target.id)
-              )
-            });
-            
-            // Filtrez la liste de recettes et affichez les résultats.
-            filterListByTags();
-            displayRecipes(filteredRecipes);
-            console.log('clicked');
-          }
-        });
-      });
-      
+//get the ingrdients list in ul with id ingredients and then search for the li with the same id as the tag id and remove it
+function removeSelectedIngredient() {
+    let tagIngredients = document.querySelectorAll('.tag-ingredients')
+    let ingredients = document.querySelector('#ingredients')
+    let ingredientsList = ingredients.querySelectorAll('li')
+    if (tagIngredients.length > 0) {
+        tagIngredients.forEach(tag => {
+            ingredientsList.forEach(ingredient => {
+                if (ingredient.id === tag.id) {
+                    ingredient.remove()
+                }
+            })
+        })
+    }
 }
 
-addTagIngredient();
+function removeSelectedAppliances () {
+    let tagAppliances = document.querySelectorAll('.tag-appliances')
+    let appliances = document.querySelector('#appliances')
+    let appliancesList = appliances.querySelectorAll('li')
+    if (tagAppliances.length > 0) {
+        tagAppliances.forEach(tag => {
+            appliancesList.forEach(appliance => {
+                if (appliance.id === tag.id) {
+                    appliance.remove()
+                }
+            })
+        })
+    }
+}
 
-// document.getElementById("ingredients").addEventListener("click", function(e){
-    
-//     document.getElementById("tag-section").innerHTML += '<span class="rounded-pill tag-ingredients text-bg-primary tag" id="' + e.target.id + '">' + e.target.id + '<i class="bi bi-x-circle"></i></span>';
-//     //remove the tag when the user click on the cross 
-//     document.getElementById(e.target.id).addEventListener("click", function(e){
-//         // document.getElementById(e.target.id).remove()
-//         filterListByTags()
-//         displayRecipes(filteredRecipes)
-//     })
-//     // //filter recipes with the tag selected
-//     const filteredRecipes = recipes.filter((recipe) => {
-//         return (
-//             recipe.ingredients.map(ingredient => ingredient.ingredient).includes(e.target.id)
-            
-//         )
-        
-//     })
-//     displayRecipes(filteredRecipes)
-//     //actualiser les listes des ingrédients, ustensils et appareils avec les ingrédients, ustensils et appareils qui sont contenus dans les recettes qui correspondent aux filtres sélectionnés
-//     filterListByTags()
-// });
+function removeSelectedUstensils () {
+    let tagUstensils = document.querySelectorAll('.tag-ustensils')
+    let ustensils = document.querySelector('#ustensils')
+    let ustensilsList = ustensils.querySelectorAll('li')
+    if (tagUstensils.length > 0) {
+        tagUstensils.forEach(tag => {
+            ustensilsList.forEach(ustensil => {
+                if (ustensil.id === tag.id) {
+                    ustensil.remove()
+                }
+            })
+        })
+    }
+}
 
-document.getElementById("ustensils").addEventListener("click", function(e){
+const searchIngredients = document.querySelector('#searchIngredients')
 
-    document.getElementById("tag-section").innerHTML += '<span class="rounded-pill tag-ustensils text-bg-primary tag" id="' + e.target.id + '">' + e.target.id + '<i class="bi bi-x-circle"></i></span>';
-    
+const listIngredients = document.querySelectorAll('#ingredients li')
+
+searchIngredients.addEventListener('keyup', (e) => {
+    const searchStringIngredients = searchIngredients.value.toLowerCase()
+
+    for (let i of listIngredients) {
+        let item = i.innerHTML.toLowerCase()
+        if (item.indexOf (searchStringIngredients) == -1) {
+            i.classList.add('hide')
+            console.log('searching')
+        } else {
+            i.classList.remove('hide')
+        }
+    }
+})
+
+const searchUstensils = document.querySelector('#searchUstensils')
+const listUstensils = document.querySelectorAll('#ustensils li')
+
+searchUstensils.onkeyup =() => {
+    const searchStringUstensils = searchUstensils.value.toLowerCase()
+
+    for (let i of listUstensils) {
+        let item = i.innerHTML.toLowerCase()
+        if (item.indexOf (searchStringUstensils) == -1) {
+            i.classList.add('hide')
+            console.log('searching')
+        } else {
+            i.classList.remove('hide')
+        }
+    }
+}
+
+const searchAppliances = document.querySelector('#searchAppliances')
+const listAppliances = document.querySelectorAll('#appliances li')
+
+searchAppliances.onkeyup =() => {
+    const searchStringAppliances = searchAppliances.value.toLowerCase()
+
+    for (let i of listAppliances) {
+        let item = i.innerHTML.toLowerCase()
+        if (item.indexOf (searchStringAppliances) == -1) {
+            i.classList.add('hide')
+            console.log('searching')
+        } else {
+            i.classList.remove('hide')
+        }
+    }
+}
 
 
-    //filter recipes with the tag selected
+//clear input search function 
+function clearInputSearch() {
+    let search = document.querySelector('#searchIngredients')
+    search.value = ''
+    let list = document.querySelectorAll('#ingredients li')
+    list.forEach(item => {
+        item.classList.remove('hide')
+    })
+}
+
+function clearInputSearchUstensils() {
+    let search = document.querySelector('#searchUstensils')
+    search.value = ''
+    let list = document.querySelectorAll('#ustensils li')
+    list.forEach(item => {
+        item.classList.remove('hide')
+    })
+}
+
+function clearInputSearchAppliances() {
+    let search = document.querySelector('#searchAppliances')
+    search.value = ''
+    let list = document.querySelectorAll('#appliances li')
+    list.forEach(item => {
+        item.classList.remove('hide')
+    })
+}
+
+
+
+
+
+
+
+//filter the list of ingredients, ustensils and appliances when we type in the search bar
+const search = document.getElementById('search')
+
+search.addEventListener('keyup', (e) => {
+    const searchString = e.target.value.toLowerCase()
     const filteredRecipes = recipes.filter((recipe) => {
         return (
-            recipe.ustensils.includes(e.target.id)
+            recipe.name.toLowerCase().includes(searchString) ||
+            recipe.description.toLowerCase().includes(searchString) ||
+            recipe.ingredients.some(ingredient => ingredient.ingredient.toLowerCase().includes(searchString)) ||
+            recipe.appliance.toLowerCase().includes(searchString) ||
+            recipe.ustensils.some(ustensil => ustensil.toLowerCase().includes(searchString))
+
         )
+
     })
 
-    displayRecipes(filteredRecipes)
-    //actualiser les listes des ingrédients, ustensils et appareils avec les ingrédients, ustensils et appareils qui sont contenus dans les recettes qui correspondent aux filtres sélectionnés
-    filterListByTags()
+    let filteredIngredients = []
+    let filteredUstensils = []
+    let filteredAppliances = []
 
-});
-
-document.getElementById("appliances").addEventListener("click", function(e){
-    
-    document.getElementById("tag-section").innerHTML += '<span class="rounded-pill tag-appliances text-bg-primary tag" id="' + e.target.id + '">' + e.target.id + '<i class="bi bi-x-circle"></i></span>';
-
-    //filter recipes with the tag selected
-    const filteredRecipes = recipes.filter((recipe) => {
-        return (
-            recipe.appliance === e.target.id
-        )
-    })
-
-    displayRecipes(filteredRecipes)
-    //actualiser les listes des ingrédients, ustensils et appareils avec les ingrédients, ustensils et appareils qui sont contenus dans les recettes qui correspondent aux filtres sélectionnés
-    filterListByTags()
-
-});
-
-
-
-
-
-//add the event listener to the search input to filter the list of ingredients, ustensils and appliances and display the matching recipes 
-// document.querySelector('#search', 'searchIngredients').addEventListener('keyup', () => {
-//     filterList()
-// })
-
-//filter the list of ingredients with the matching value when user search on the input with id searchIngredients 
-document.querySelector('#searchIngredients').addEventListener('keyup', () => {
-    let ingredients = document.querySelectorAll('#ingredients li')
-    ingredients.forEach(ingredient => {
-        if (ingredient.textContent.toLowerCase().includes(document.querySelector('#searchIngredients').value.toLowerCase())) {
-            ingredient.style.display = 'block'
-        } else {
-            ingredient.style.display = 'none'
+    filteredRecipes.forEach(recipe => {
+        recipe.ingredients.forEach(ingredient => {
+            if (!filteredIngredients.includes(ingredient.ingredient)) {
+                filteredIngredients.push(ingredient.ingredient)
+            }
+        })
+        recipe.ustensils.forEach(ustensil => {
+            if (!filteredUstensils.includes(ustensil)) {
+                filteredUstensils.push(ustensil)
+            }
+        })
+        if (!filteredAppliances.includes(recipe.appliance)) {
+            filteredAppliances.push(recipe.appliance)
         }
     })
+
+    let ingredients = document.querySelector('#ingredients')
+    let ustensils = document.querySelector('#ustensils')
+    let appliances = document.querySelector('#appliances')
+
+    ingredients.innerHTML = ''
+    ustensils.innerHTML = ''
+    appliances.innerHTML = ''
+
+    addOptionsToLists(filteredIngredients, filteredUstensils, filteredAppliances)
 })
-
-//do the same for the ustensils and appliances
-document.querySelector('#searchUstensils').addEventListener('keyup', () => {
-    let ustensils = document.querySelectorAll('#ustensils li')
-    ustensils.forEach(ustensil => {
-        if (ustensil.textContent.toLowerCase().includes(document.querySelector('#searchUstensils').value.toLowerCase())) {
-            ustensil.style.display = 'block'
-        } else {
-            ustensil.style.display = 'none'
-        }
-    })
-})
-
-document.querySelector('#searchAppliances').addEventListener('keyup', () => {
-    let appliances = document.querySelectorAll('#appliances li')
-    appliances.forEach(appliance => {
-        if (appliance.textContent.toLowerCase().includes(document.querySelector('#searchAppliances').value.toLowerCase())) {
-            appliance.style.display = 'block'
-        } else {
-            appliance.style.display = 'none'
-        }
-    })
-})
-
-
 
 
 
@@ -390,21 +487,26 @@ document.querySelector('#searchAppliances').addEventListener('keyup', () => {
 
 
 //show dinamycally the recipes in the html page from the input search bar with id "search"
-const search = document.getElementById('search')
+
 search.addEventListener('keyup', (e) => {
     const searchString = e.target.value.toLowerCase()
     const filteredRecipes = recipes.filter((recipe) => {
         return (
             recipe.name.toLowerCase().includes(searchString) ||
-            recipe.description.toLowerCase().includes(searchString)      
+            recipe.description.toLowerCase().includes(searchString) ||
+            recipe.ingredients.some(ingredient => ingredient.ingredient.toLowerCase().includes(searchString)) ||
+            recipe.appliance.toLowerCase().includes(searchString) ||
+            recipe.ustensils.some(ustensil => ustensil.toLowerCase().includes(searchString))
+
         )
+        
     })
 
 //show the result in the html page with id "recipes" if the input search bar is more than 3 characters
     if (searchString.length > 2) {
     displayRecipes(filteredRecipes)
     //filter the list of ingredients, ustensils and appliances with the matching value when user search on the input with id search
-    filterList()
+    
     } else {
         //show a message in the dom if the input search bar is less than 3 characters 
         document.querySelector('#recipes').innerHTML = `<p>Aucune recette ne correspond à votre critère… vous pouvez chercher « tarte aux pommes », « poisson », etc</p>`

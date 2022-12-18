@@ -23,7 +23,7 @@
     </svg>
   </header>
   <section class="container">
-    <form action="" class="searchbar" >
+    <form class="searchbar">
       <div class="input-group mb-3">
         <input id="search" type="text" minlength="3" class="form-control form-control-lg"
           placeholder="Rechercher un ingrédient, un appareil, un ustensile ou une recette">
@@ -43,31 +43,21 @@
 
     <details id="additionalSearch-ingredients" class="additionalSearch-ingredients">
       <summary>
-        <input list="ingredients" type="text" minlength="3" 
-          placeholder="Rechercher un ingrédient" id="searchIngredients">
+        <input list="ingredients" type="text" minlength="3" placeholder="Rechercher un ingrédient"
+          id="searchIngredients">
         <p>Ingrédients </p>
         <span><i class="bi bi-chevron-down"></i></span>
-
-        
-
       </summary>
-      
       <div id="ingredientsList">
-
-
         <ul id="ingredients" class="dropdown-menu-ingredients">
-
         </ul>
       </div>
-
-
     </details>
 
 
     <details id="additionalSearch-appliances" class="additionalSearch-apparel">
       <summary>
-        <input list="appliance" type="text" minlength="3" placeholder="Rechercher un appareil"
-          id="searchAppliances">
+        <input list="appliance" type="text" minlength="3" placeholder="Rechercher un appareil" id="searchAppliances">
         <p>Appareils</p>
         <span><i class="bi bi-chevron-down"></i></span>
       </summary>
@@ -75,26 +65,16 @@
         <ul id="appliances" class="dropdown-menu-appliances">
         </ul>
       </div>
-
-
     </details>
 
     <details id="additionalSearch-ustensils" class="additionalSearch-ustensils">
       <summary>
-        <input list="ustensils" type="text" minlength="3"  placeholder="Rechercher un ustensile"
-          id="searchUstensils" >
+        <input list="ustensils" type="text" minlength="3" placeholder="Rechercher un ustensile" id="searchUstensils">
         <p>Ustensiles</p>
         <span><i class="bi bi-chevron-down"></i></span>
-
-        
-
-
       </summary>
       <div id="ustensilsList">
-
-
         <ul id="ustensils" class="dropdown-menu-ustensils">
-
         </ul>
       </div>
 
@@ -102,13 +82,9 @@
     </details>
   </section>
   <main class="container">
-
     <div id="recipes" class="recipes-container">
-
     </div>
   </main>
-
- 
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2"
@@ -117,5 +93,4 @@
   <script src="/recipes.js"></script>
   <script src="/script.js"></script>
 </body>
-
 </html>

@@ -186,7 +186,7 @@ ul li:hover {
   
 }
 
-.list-group-item {
+/* .list-group-item {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -196,7 +196,7 @@ ul li:hover {
   border: 1px solid rgba(0, 0, 0, 0.125);
   border-radius: 0.25rem;
   font-size: 18px;
-}
+} */
 .active {
 display: block;
 }
@@ -240,4 +240,8 @@ transition: 0.5s;
 
 #tag-section > .tag-ingredients i, #tag-section > .tag-appliances i , #tag-section > .tag-ustensils i {
   padding-left: 5px;
+}
+
+#ingredients li.hide, #appliances li.hide, #ustensils li.hide{
+  display: none;
 }
