@@ -47,7 +47,7 @@ window.onload = () => {
   function closeDetails() {
     const summary = this.querySelector("summary");
     const input = summary.querySelector("input");
-    const p = summary.querySelector("p");
+    const title = summary.querySelector(".summaryTitle");
     const span = summary.querySelector("span");
     if (this.open) {
       details.forEach((detail) => {
@@ -59,13 +59,13 @@ window.onload = () => {
         this.setAttribute("open", "");
       });
       span.classList.add("rotate");
-      p.classList.add("hidden");
+      title.classList.add("hidden");
       input.classList.add("active");
       input.focus();
     } else {
       input.classList.remove("active");
-      p.classList.add("active");
-      p.classList.remove("hidden");
+      title.classList.add("active");
+      title.classList.remove("hidden");
       span.classList.remove("rotate");
     }
   }
@@ -75,7 +75,7 @@ window.onload = () => {
     recipes.forEach((recipe) => {
       html += `
             <div class="card">
-              <img src="/placeholder.jpg" class="card-img-top" alt="${
+              <img src="./placeholder.jpg" class="card-img-top" alt="${
                 recipe.name
               }">
               <div class="card-body">
@@ -506,10 +506,10 @@ searchInput.addEventListener("input", (e) => {
   search.addEventListener("keyup", (e) => {
     const searchString = e.target.value.toLowerCase();
     let filteredRecipes;
-    
+  
     // Get the tags that are currently present in the tag section
     const tags = document.querySelectorAll('.tag');
-    
+  
     // If there are no tags present, search through all recipes
     if (tags.length === 0) {
       filteredRecipes = recipes.filter((recipe) => {
@@ -532,25 +532,47 @@ searchInput.addEventListener("input", (e) => {
         let searchStringMatch =
           recipe.name.toLowerCase().includes(searchString) ||
           recipe.description.toLowerCase().includes(searchString) ||
-          recipe.appliance.toLowerCase().includes(searchString);
+          recipe.appliance.toLowerCase().includes(searchString) ||
+          recipe.ingredients.some((ingredient) =>
+            ingredient.ingredient.toLowerCase().includes(searchString)
+          ) ||
+          recipe.ustensils.some((ustensil) =>
+            ustensil.toLowerCase().includes(searchString)
+          );
   
         // Check if any selected tag is present in the ingredients or utensils of the recipe
         let tagMatch = Array.from(tags).some((tag) =>
-  recipe.ingredients.some((ingredient) => tag.id === ingredient.ingredient)) || Array.from(tags).some((tag) => recipe.ustensils.some((ustensil) => tag.id === ustensil)
-);
+          recipe.ingredients.some((ingredient) => tag.id === ingredient.ingredient)
+        ) || Array.from(tags).some((tag) =>
+          recipe.ustensils.some((ustensil) => tag.id === ustensil)
+        );
         // Return true if the search string or a selected tag is present in the recipe
         return searchStringMatch || tagMatch;
       });
     }
-    
-    if (searchString.length >= 3) {
+  
+    // If the search bar is empty, display either the filtered recipes (if tags are present) or all recipes (if no tags are present)
+    if (searchString.length === 0) {
+      // Filter recipes by tags if tags are present
+      if (tags.length > 0) {
+        filteredRecipes = recipes.filter((recipe) => {
+          return Array.from(tags).some((tag) =>
+            recipe.ingredients.some((ingredient) => tag.id === ingredient.ingredient)
+          ) || Array.from(tags).some((tag) =>
+            recipe.ustensils.some((ustensil) => tag.id === ustensil)
+          );
+        });
+      }
+      displayRecipes(filteredRecipes);
+    } else if (searchString.length >= 3) {
       if (filteredRecipes.length > 0) {
         displayRecipes(filteredRecipes);
       } else {
         document.querySelector(
           "#recipes"
-        ).innerHTML = `<p>Aucune recette ne correspond à votre critère… vous pouvez chercher « tarte aux pommes », « poisson », etc</p>`;
+        ).innerHTML = `<p>Aucune recette ne correspond à votre critère… vous pouvez chercher« tarte aux pommes », « poisson », etc</p>`;
       }
     }
   });
+  
 };
